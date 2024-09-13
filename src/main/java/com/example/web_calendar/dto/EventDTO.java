@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EventDTO {
 
-    private Long id;
+    private Long eno;
 
     private String title;
     private String description;
     private String location;
 
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private boolean isAllDay;
 
     private LocalDateTime regDate;
