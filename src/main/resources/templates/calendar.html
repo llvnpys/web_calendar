@@ -1,28 +1,188 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar - {{ viewType }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>FullCalendar Example</title>
+    <style>
+        /* 버튼 스타일 */
+        .fc-button {
+            margin: 5px;
+        }
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1 th:text="${#strings.capitalize(viewType)} + ' View'">View</h1>
 
-<div>
-    <ul>
-        <li th:each="event : ${events}">
-            <h2 th:text="${event.title}">Event Title</h2>
-            <p th:text="${event.description}">Event Description</p>
-            <p th:text="${event.startTime}">Event Start</p>
-            <p th:text="${event.endTime}">Event End</p>
-        </li>
-    </ul>
+<div id="calendar"></div>
+
+<!-- 모달 HTML -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="eventTitle"></h2>
+        <p id="eventDescription"></p>
+        <p>Location: <span id="eventLocation"></span></p>
+        <p>Start: <span id="eventStart"></span></p>
+        <p>End: <span id="eventEnd"></span></p>
+        <button id="editEventButton">Edit Event</button>
+        <button id="deleteEventButton">Delete Event</button>
+    </div>
 </div>
 
-<div>
-    <a th:href="@{/calendar/daily}">Daily View</a>
-    <a th:href="@{/calendar/weekly}">Weekly View</a>
-    <a th:href="@{/calendar/monthly}">Monthly View</a>
-</div>
+<script>
+    // 날짜 포맷팅 함수
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: function(fetchInfo, successCallback, failureCallback) {
+                // AJAX 요청을 통해 이벤트를 가져옵니다.
+                axios.get('/api/events/range', {
+                    params: {
+                        start: fetchInfo.startStr,
+                        end: fetchInfo.endStr
+                    }
+                })
+                    .then(function(response) {
+                        // 가져온 이벤트 데이터를 성공적으로 받았을 때
+                        const events = response.data.map(event => ({
+                            id: event.eno, // 이벤트의 ID 설정
+                            title: event.title,
+                            start: event.start,
+                            end: event.end,
+                            extendedProps: {
+                                eno: event.eno // 추가 정보로 eno 설정
+                            }
+                        }));
+                        successCallback(events); // FullCalendar에 이벤트 데이터 전달
+                    })
+                    .catch(function(error) {
+                        // 에러 처리
+                        console.error('Error fetching events:', error);
+                        failureCallback(error); // 에러를 FullCalendar에 전달
+                    });
+            },
+
+
+
+            eventClick: function(info) {
+                const eno = info.event.id // 이벤트 ID 가져오기
+                fetch(`/api/events/${eno}`)
+                    .then(response => response.json())
+                    .then(event => {
+                        // 모달에 이벤트 정보 업데이트
+                        console.log(event)
+                        document.getElementById('eventTitle').innerText = event.title;
+                        document.getElementById('eventDescription').innerText = event.description;
+                        document.getElementById('eventLocation').innerText = event.location;
+                        // 날짜와 시간 포맷팅
+                        document.getElementById('eventStart').innerText = formatDate(event.start);
+                        document.getElementById('eventEnd').innerText = formatDate(event.end);
+
+                        document.getElementById('editEventButton').onclick = function() {
+                            // 수정 페이지로 이동 (여기서는 간단히 로그를 남깁니다)
+                            console.log(`Edit event with ID: ${eno}`);
+                            // 실제 수정 기능은 다른 페이지로 이동하거나 모달에 수정 폼을 표시하는 방식으로 구현해야 함
+                        };
+
+                        document.getElementById('deleteEventButton').onclick = function() {
+                            if (confirm("Are you sure you want to delete this event?")) {
+                                fetch(`/api/events/${eno}`, {
+                                    method: 'DELETE'
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            // 성공적으로 삭제된 경우
+                                            alert('Event deleted successfully.');
+                                            calendar.refetchEvents(); // 이벤트 새로고침
+                                            document.getElementById('eventModal').style.display = "none"; // 모달 닫기
+                                        } else {
+                                            alert('Failed to delete event.');
+                                        }
+                                    })
+                                    .catch(error => console.error('Error deleting event:', error));
+                            }
+                        };
+
+                        // 모달 표시
+                        document.getElementById('eventModal').style.display = "block";
+                    })
+                    .catch(error => console.error('Error fetching event:', error));
+            }
+        });
+
+        calendar.render();
+
+        // 모달 닫기 기능
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            document.getElementById('eventModal').style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('eventModal')) {
+                document.getElementById('eventModal').style.display = "none";
+            }
+        }
+    });
+</script>
+
 </body>
 </html>

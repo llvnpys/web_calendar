@@ -20,8 +20,8 @@ public class EventDTO {
     private String description;
     private String location;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private boolean isAllDay;
 
     private LocalDateTime regDate;

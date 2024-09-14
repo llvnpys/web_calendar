@@ -1,7 +1,9 @@
 package com.example.web_calendar.service;
 
 import com.example.web_calendar.dto.EventDTO;
+import com.example.web_calendar.model.Event;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -16,6 +18,7 @@ public interface EventService {
 
     void remove(Long eno);
 
-    List<EventDTO> getEventByViewType(String viewType);
+     List<EventDTO> getEventsByRange(LocalDateTime start, LocalDateTime end);
+
 
 }

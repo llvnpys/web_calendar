@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "\"event\"")
+@Table(name = "events")
 public class Event extends BaseEntity {
 
     @Id
@@ -24,9 +24,9 @@ public class Event extends BaseEntity {
     private String location;
 
     @Column(name = "start_time")
-    private LocalDateTime startTime;
+    private LocalDateTime start;
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private LocalDateTime end;
     @Column(name = "is_all_day")
     private boolean isAllDay;
 
@@ -39,8 +39,8 @@ public class Event extends BaseEntity {
 
     public void updateDates(EventDTO eventDTO) {
         this.isAllDay = eventDTO.isAllDay();
-        this.startTime = eventDTO.getStartTime();
-        this.endTime = eventDTO.getEndTime();
+        this.start = eventDTO.getStart();
+        this.end = eventDTO.getEnd();
     }
 
 }

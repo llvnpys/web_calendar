@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,24 +16,12 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/calendar")
+@RequestMapping()
 public class CalendarController {
 
-    private final EventService eventService;
-
-    @GetMapping("/{viewType}") // viewType: day, week, month
-    public String showCalendarByView(@PathVariable String viewType, Model model) {
-        // viewType 검증 로직
-        if (!Arrays.asList("daily", "weekly", "monthly").contains(viewType)) {
-            throw new IllegalArgumentException("Invalid view type");
-        }
-
-        // 날짜 및 이벤트 로직 구현
-
-        List<EventDTO> events = eventService.getEventByViewType(viewType);
-        model.addAttribute("events", events);
-        model.addAttribute("viewType", viewType);
-
+    @GetMapping("/calendar")
+    public String getCalendar() {
         return "calendar";
     }
+
 }

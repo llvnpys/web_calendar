@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 @SpringBootTest
 class EventServiceImplTest {
 
@@ -23,11 +20,11 @@ class EventServiceImplTest {
     public void testCreate() {
 
         EventDTO eventDTO = EventDTO.builder()
-                .title("test1")
-                .description("test des1")
+                .title("haha")
+                .description("haha3")
                 .location("hanyang")
-                .startTime(LocalDateTime.of(2024, 9, 13, 15, 0)) // 시작 시간 설정
-                .endTime(LocalDateTime.of(2024, 9, 15, 17, 0))   // 종료 시간 설정
+                .start(LocalDateTime.of(2024, 9, 14, 15, 0)) // 시작 시간 설정
+                .end(LocalDateTime.of(2024, 9, 15, 17, 0))   // 종료 시간 설정
                 .isAllDay(false) // All day 여부 설정
                 .build();
 
@@ -42,8 +39,8 @@ class EventServiceImplTest {
                 .title("test2")
                 .description("test des2")
                 .location("hanyang3")
-                .startTime(LocalDateTime.of(2024, 9, 13, 15, 0)) // 시작 시간 설정
-                .endTime(LocalDateTime.of(2024, 9, 15, 17, 0))   // 종료 시간 설정
+                .start(LocalDateTime.of(2024, 9, 13, 15, 0)) // 시작 시간 설정
+                .end(LocalDateTime.of(2024, 9, 15, 17, 0))   // 종료 시간 설정
                 .isAllDay(false) // All day 여부 설정
                 .build();
 

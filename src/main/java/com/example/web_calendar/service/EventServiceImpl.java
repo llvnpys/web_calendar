@@ -67,37 +67,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> getEventByViewType(String viewType) {
-        List<Event> events;
+    public List<EventDTO> getEventsByRange(LocalDateTime start, LocalDateTime end) {
+        List<Event> events = eventRepository.findByStartBetween(start, end);
 
-        // 현재 날짜를 기준으로 이벤트를 필터링
-        LocalDateTime now = LocalDateTime.now();
-
-        switch (viewType) {
-            case "daily":
-                // 오늘의 이벤트 가져오기
-                events = eventRepository.findByStartTimeBetween(
-                        now.toLocalDate().atStartOfDay(),
-                        now.toLocalDate().atTime(23, 59, 59)
-                );
-                break;
-            case "weekly":
-                // 이번 주의 이벤트 가져오기
-                LocalDateTime startOfWeek = now.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay();
-                LocalDateTime endOfWeek = now.with(DayOfWeek.SUNDAY).toLocalDate().atTime(23, 59, 59);
-                events = eventRepository.findByStartTimeBetween(startOfWeek, endOfWeek);
-                break;
-            case "monthly":
-                // 이번 달의 이벤트 가져오기
-                LocalDateTime startOfMonth = now.withDayOfMonth(1).toLocalDate().atStartOfDay();
-                LocalDateTime endOfMonth = now.withDayOfMonth(now.toLocalDate().lengthOfMonth()).toLocalDate().atTime(23, 59, 59);
-                events = eventRepository.findByStartTimeBetween(startOfMonth, endOfMonth);
-                break;
-            default:
-                events = new ArrayList<>();
-        }
-
-        // Event -> EventDTO 변환
+        // Event 리스트를 EventDTO 리스트로 변환
         return events.stream()
                 .map(event -> modelMapper.map(event, EventDTO.class))
                 .collect(Collectors.toList());
