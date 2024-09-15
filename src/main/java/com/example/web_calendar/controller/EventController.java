@@ -5,6 +5,7 @@ import com.example.web_calendar.model.Event;
 import com.example.web_calendar.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
     private final EventService eventService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/range")
     public ResponseEntity<List<EventDTO>> getEventsByRange(
@@ -40,28 +42,31 @@ public class EventController {
     }
 
     // 특정 이벤트 가져오기
-    @GetMapping("/{id}")
-    public ResponseEntity<EventDTO> getEventById(@PathVariable Long id) {
-        EventDTO eventDTO = eventService.readOne(id);
+    @GetMapping("/{eno}")
+    public ResponseEntity<EventDTO> getEventById(@PathVariable Long eno) {
+        EventDTO eventDTO = eventService.readOne(eno);
         return ResponseEntity.ok(eventDTO);
     }
 
     // 이벤트 추가하기
     @PostMapping
     public void createEvent(@RequestBody Event event) {
-        // 새로운 이벤트를 추가하는 로직
+        EventDTO eventDTO = modelMapper.map(event, EventDTO.class);
+        eventService.create(eventDTO);
     }
 
     // 이벤트 수정하기
-    @PutMapping("/{id}")
-    public void updateEvent(@PathVariable Long id, @RequestBody Event event) {
-        // 특정 이벤트를 수정하는 로직
+    @PutMapping("/{eno}")
+    public void updateEvent(@PathVariable Long eno, @RequestBody Event event) {
+        EventDTO eventDTO = modelMapper.map(event, EventDTO.class);
+        eventService.modify(eno, eventDTO);
     }
 
     // 이벤트 삭제하기
-    @DeleteMapping("/{id}")
-    public void deleteEvent(@PathVariable Long id) {
-        // 특정 이벤트를 삭제하는 로직
+    @DeleteMapping("/{eno}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long eno) {
+        eventService.remove(eno);
+        return ResponseEntity.noContent().build(); // 삭제 성공 시 204 No Content 반환
     }
 
 }

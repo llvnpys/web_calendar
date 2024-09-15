@@ -43,22 +43,15 @@ public class EventServiceImpl implements EventService {
         return eventDTO;
     }
 
+
     @Override
-    public void modifyInfo(EventDTO eventDTO) {
-        Optional<Event> result = eventRepository.findById(eventDTO.getEno());
+    public void modify(Long eno, EventDTO eventDTO) {
+        Optional<Event> result = eventRepository.findById(eno);
 
         // 예외처리
         Event event = result.orElseThrow();
 
-        event.updateInfo(eventDTO);
-    }
-
-    @Override
-    public void modifyDates(EventDTO eventDTO) {
-        Optional<Event> result = eventRepository.findById(eventDTO.getEno());
-        // 예외처리
-        Event event = result.orElseThrow();
-        event.updateDates(eventDTO);
+        event.update(eventDTO);
     }
 
     @Override

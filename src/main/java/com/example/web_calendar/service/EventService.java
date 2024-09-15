@@ -13,8 +13,7 @@ public interface EventService {
 
     EventDTO readOne(Long eno);
 
-    void modifyInfo(EventDTO eventDTO);
-    void modifyDates(EventDTO eventDTO);
+    void modify(Long eno, EventDTO eventDTO);
 
     void remove(Long eno);
 

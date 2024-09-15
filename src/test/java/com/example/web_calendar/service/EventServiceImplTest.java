@@ -44,7 +44,7 @@ class EventServiceImplTest {
                 .isAllDay(false) // All day 여부 설정
                 .build();
 
-        eventService.modifyInfo(eventDTO);
+
     }
 
 

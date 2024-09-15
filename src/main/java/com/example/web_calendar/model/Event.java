@@ -31,14 +31,10 @@ public class Event extends BaseEntity {
     private boolean isAllDay;
 
 
-    public void updateInfo(EventDTO eventDTO) {
+    public void update(EventDTO eventDTO) {
         this.title = eventDTO.getTitle();
         this.description = eventDTO.getDescription();
         this.location = eventDTO.getLocation();
-    }
-
-    public void updateDates(EventDTO eventDTO) {
-        this.isAllDay = eventDTO.isAllDay();
         this.start = eventDTO.getStart();
         this.end = eventDTO.getEnd();
     }
