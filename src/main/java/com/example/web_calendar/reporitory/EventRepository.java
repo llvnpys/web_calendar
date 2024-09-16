@@ -12,4 +12,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
      List<Event> findByStartBetween(LocalDateTime start, LocalDateTime end);
 
+     List<Event> findByEndGreaterThanEqualOrStartLessThanEqual(LocalDateTime start, LocalDateTime end);
+
 }

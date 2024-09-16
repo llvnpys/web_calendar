@@ -2,6 +2,9 @@ package com.example.web_calendar.model;
 
 import com.example.web_calendar.dto.EventDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,7 +25,6 @@ public class Event extends BaseEntity {
     private String title;
     private String description;
     private String location;
-
     @Column(name = "start_time")
     private LocalDateTime start;
     @Column(name = "end_time")

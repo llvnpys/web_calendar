@@ -29,7 +29,8 @@
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 dayMaxEvents: true, // allow "more" link when too many events
-                selectable: true,
+
+                // selectable: true,
 
 
                 events: function (fetchInfo, successCallback, failureCallback) {
@@ -242,25 +243,6 @@
                         });
                 },
 
-                // 크기 조정된 후 처리
-                eventResize: function (info) {
-
-                    let eventId = info.event.id;
-                    let newStart = info.event.start.toISOString();
-                    let newEnd = info.event.end.toISOString();
-
-                    axios.put(`/api/events/${eventId}`, {
-                        start: newStart,
-                        end: newEnd
-                    })
-                        .then(response => {
-                            alert('Event resized successfully!');
-                        })
-                        .catch(error => {
-                            console.error('Error resizing event:', error);
-                        });
-                }
-
             });
             calendar.render();
         });
@@ -345,7 +327,6 @@
     </div>
 </div>
 
-<!-- 이벤트 생성 모달 -->
 <div id="createEventModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="document.getElementById('createEventModal').style.display='none'">&times;</span>

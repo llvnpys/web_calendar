@@ -17,7 +17,5 @@ public interface EventService {
 
     void remove(Long eno);
 
-     List<EventDTO> getEventsByRange(LocalDateTime start, LocalDateTime end);
-
-
+    List<EventDTO> getEventsByRange(LocalDateTime start, LocalDateTime end);
 }
